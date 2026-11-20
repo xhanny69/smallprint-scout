@@ -1,0 +1,32 @@
+{
+  "source": {
+    "type": "podcast_rss",
+    "show": "Acquired",
+    "episode": "Costco",
+    "url": "https://www.acquired.fm/"
+  },
+  "candidate_id": "acq-costco-03",
+  "question": "Why does Costco still sell a hot dog for $1.50?",
+  "start_s": 7412.3,
+  "end_s": 7468.9,
+  "hook_line": "The founder told the CEO: if you raise the price of the hot dog, I will kill you.",
+  "scores": {
+    "hook": 9,
+    "payoff_clarity": 8,
+    "fact_checkable": 9,
+    "channel_fit": 10,
+    "total": 36
+  },
+  "claims_to_verify": [
+    "Price unchanged since 1985",
+    "Quote attributed to Jim Sinegal"
+  ],
+  "crop_track": [
+    { "t": 7412.3, "x": 640, "mode": "track", "face_id": 2 },
+    { "t": 7431.0, "x": 1180, "mode": "cut", "face_id": 1 },
+    { "t": 7452.4, "x": 900, "mode": "both" }
+  ],
+  "clip_path": "drive://SmallPrint/inbox/acq-costco-03_9x16.mp4",
+  "transcript_excerpt": "Illustrative example. Timestamps and crop values are placeholders until milestone 1 runs on the real episode.",
+  "status": "needs_review"
+}

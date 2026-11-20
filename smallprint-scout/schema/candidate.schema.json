@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Small Print scout candidate",
+  "description": "One moment from a long-form source that could become a Small Print episode.",
+  "type": "object",
+  "required": ["source", "candidate_id", "question", "start_s", "end_s", "hook_line", "scores", "claims_to_verify", "status"],
+  "properties": {
+    "source": {
+      "type": "object",
+      "required": ["type", "show", "episode", "url"],
+      "properties": {
+        "type": { "enum": ["podcast_rss", "youtube"] },
+        "show": { "type": "string", "minLength": 1 },
+        "episode": { "type": "string", "minLength": 1 },
+        "url": { "type": "string", "pattern": "^https?://" }
+      }
+    },
+    "candidate_id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+    "question": { "type": "string", "pattern": "^Why " },
+    "start_s": { "type": "number", "minimum": 0 },
+    "end_s": { "type": "number", "minimum": 0 },
+    "hook_line": { "type": "string", "minLength": 1 },
+    "scores": {
+      "type": "object",
+      "required": ["hook", "payoff_clarity", "fact_checkable", "channel_fit", "total"],
+      "properties": {
+        "hook": { "type": "integer", "minimum": 0, "maximum": 10 },
+        "payoff_clarity": { "type": "integer", "minimum": 0, "maximum": 10 },
+        "fact_checkable": { "type": "integer", "minimum": 0, "maximum": 10 },
+        "channel_fit": { "type": "integer", "minimum": 0, "maximum": 10 },
+        "total": { "type": "integer", "minimum": 0, "maximum": 40 }
+      }
+    },
+    "claims_to_verify": { "type": "array", "items": { "type": "string" } },
+    "crop_track": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["t", "x", "mode"],
+        "properties": {
+          "t": { "type": "number" },
+          "x": { "type": "integer", "minimum": 0 },
+          "mode": { "enum": ["track", "hold", "cut", "both", "stack", "blur_fill"] },
+          "face_id": { "type": "integer" }
+        }
+      }
+    },
+    "clip_path": { "type": "string" },
+    "transcript_excerpt": { "type": "string" },
+    "status": { "enum": ["needs_review", "approved", "rejected", "redo_crop"] }
+  }
+}

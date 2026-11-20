@@ -1,0 +1,266 @@
+<title>Small Print Scout</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@600;700&family=Figtree:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column, the case-file desk at night. Slack card first (what the operator sees), then how it gets made. */
+:root {
+  --bg: #0E1424; --surface: #161D31; --surface-2: #1D2640; --line: #2A3350;
+  --fg: #E9ECF3; --muted: #9AA3B8; --gold: #F2B33D; --gold-ink: #1A1305;
+  --stamp: #E8604C; --ok: #4CC38A;
+  --display: "Zilla Slab", Rockwell, Georgia, serif;
+  --body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) {
+  --bg: #EEF1F6; --surface: #FFFFFF; --surface-2: #F5F7FB; --line: #D3D9E4;
+  --fg: #141A2B; --muted: #566077; --gold: #A86C00; --gold-ink: #FFFFFF;
+  --stamp: #C23A28; --ok: #1E8A57; color-scheme: light; } }
+:root[data-theme="light"] {
+  --bg: #EEF1F6; --surface: #FFFFFF; --surface-2: #F5F7FB; --line: #D3D9E4;
+  --fg: #141A2B; --muted: #566077; --gold: #A86C00; --gold-ink: #FFFFFF;
+  --stamp: #C23A28; --ok: #1E8A57; color-scheme: light; }
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font: 16px/1.6 var(--body); }
+.wrap { max-width: 860px; margin: 0 auto; padding-block: 40px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column; gap: 56px; }
+h1, h2 { font-family: var(--display); font-weight: 700; text-wrap: balance; margin: 0; line-height: 1.15; }
+h1 { font-size: clamp(2rem, 5vw, 2.9rem); }
+h2 { font-size: 1.55rem; }
+p { margin: 0; max-width: 65ch; }
+a { color: var(--gold); }
+.label { font: 500 0.72rem/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+section { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+
+/* header */
+.tag { display: inline-flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.tag span { font: 500 0.72rem/1 var(--mono); letter-spacing: 0.1em; text-transform: uppercase;
+  border: 1px solid var(--line); border-radius: 3px; padding: 6px 8px; color: var(--muted); }
+.tag .live { color: var(--stamp); border-color: var(--stamp); }
+header { display: flex; flex-direction: column; gap: 16px; }
+header h1 em { font-style: normal; color: var(--gold); }
+.facts { display: flex; flex-wrap: wrap; gap: 8px 24px; font: 0.85rem/1.4 var(--mono); color: var(--muted); }
+.facts b { color: var(--fg); font-weight: 500; }
+
+/* slack mock */
+.slack { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.slack-top { display: flex; justify-content: space-between; gap: 12px; padding: 10px 16px; border-bottom: 1px solid var(--line);
+  font: 500 0.85rem/1.4 var(--mono); color: var(--muted); flex-wrap: wrap; }
+.slack-top b { color: var(--fg); }
+.msg { display: grid; grid-template-columns: 36px 1fr; gap: 12px; padding: 16px; }
+.avatar { width: 36px; height: 36px; border-radius: 8px; background: var(--gold); color: var(--gold-ink);
+  display: grid; place-items: center; font: 700 0.95rem/1 var(--display); }
+.msg-body { min-width: 0; display: flex; flex-direction: column; gap: 12px; }
+.who { font-weight: 600; }
+.who small { font: 400 0.78rem var(--mono); color: var(--muted); margin-left: 8px; }
+.card { border: 1px solid var(--line); border-left: 3px solid var(--gold); border-radius: 6px; background: var(--surface-2);
+  padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.card .q { font: 700 1.15rem/1.3 var(--display); }
+.hook { font-style: italic; color: var(--muted); }
+.meta { display: flex; flex-wrap: wrap; gap: 6px 18px; font: 0.8rem/1.4 var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+.scores { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px 18px; }
+.score { display: grid; grid-template-columns: 1fr auto; gap: 4px; font: 0.78rem/1.2 var(--mono); color: var(--muted); }
+.score i { grid-column: 1 / -1; height: 5px; border-radius: 3px; background: var(--line); position: relative; overflow: hidden; }
+.score i::after { content: ""; position: absolute; inset: 0 auto 0 0; width: var(--w); background: var(--gold); }
+.score b { color: var(--fg); font-weight: 500; font-variant-numeric: tabular-nums; }
+.claims { margin: 0; padding-left: 18px; font-size: 0.9rem; }
+.claims li::marker { color: var(--stamp); }
+.reacts { display: flex; flex-wrap: wrap; gap: 8px; }
+.reacts button { font: 500 0.82rem/1 var(--body); color: var(--fg); background: var(--surface); border: 1px solid var(--line);
+  border-radius: 999px; padding: 7px 12px; cursor: pointer; }
+.reacts button:hover { border-color: var(--gold); }
+.reacts button[aria-pressed="true"] { border-color: var(--gold); background: color-mix(in srgb, var(--gold) 16%, var(--surface)); }
+.reacts button:focus-visible, .modes button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.reply { font-size: 0.9rem; color: var(--muted); min-height: 1.6em; }
+.note { font: 0.78rem/1.4 var(--mono); color: var(--muted); }
+
+/* pipeline table */
+.tbl { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; }
+table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: 0.9rem; }
+th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font: 500 0.72rem/1.2 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); background: var(--surface); }
+tr:last-child td { border-bottom: 0; }
+td:first-child { font: 500 0.85rem var(--mono); color: var(--gold); white-space: nowrap; }
+td:last-child { color: var(--muted); }
+
+/* framing demo */
+.frame-box { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 16px; display: flex; flex-direction: column; gap: 14px; }
+.modes { display: flex; flex-wrap: wrap; gap: 8px; }
+.modes button { font: 500 0.82rem/1 var(--body); color: var(--fg); background: var(--surface-2); border: 1px solid var(--line);
+  border-radius: 6px; padding: 9px 12px; cursor: pointer; }
+.modes button[aria-pressed="true"] { border-color: var(--gold); color: var(--gold); }
+svg { width: 100%; height: auto; display: block; }
+#crop { transition: transform 0.45s cubic-bezier(.3,.8,.3,1), opacity 0.3s; }
+@media (prefers-reduced-motion: reduce) { #crop { transition: none; } }
+.rule { font-size: 0.92rem; }
+.rule b { color: var(--gold); font-weight: 600; }
+
+/* json */
+pre { margin: 0; overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 16px;
+  font: 0.8rem/1.55 var(--mono); }
+.k { color: var(--gold); } .s { color: var(--ok); } .n { color: var(--stamp); }
+
+footer { display: flex; flex-direction: column; gap: 10px; border-top: 1px solid var(--line); padding-top: 24px; font-size: 0.92rem; color: var(--muted); }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="tag"><span class="live">● Case file: scout</span><span>Design phase · mockup</span></div>
+    <h1>Small Print Scout: the research desk that <em>never sleeps</em></h1>
+    <p>Small Print is a YouTube Shorts channel about weird business decisions, told as animated 3D toy-figure stories. The animation is already code. The slow part is research: three hours of podcast to find twenty seconds of story. This page shows what a persistent Devin bot would hand back every morning.</p>
+    <div class="facts">
+      <span>Channel <b><a href="https://www.youtube.com/@tinyclause" target="_blank" rel="noopener">youtube.com/@tinyclause</a></b></span>
+      <span>Live <b>#001 Kodak · #002 Bertha Benz</b></span>
+      <span>Scheduled <b>#003 Haier</b></span>
+      <span>Rendered with <b>Remotion + three.js</b></span>
+    </div>
+  </header>
+
+  <section aria-labelledby="h-slack">
+    <span class="label">What lands in Slack</span>
+    <h2 id="h-slack">Morning digest in #scout-inbox</h2>
+    <div class="slack" role="group" aria-label="Slack message mockup">
+      <div class="slack-top"><span><b># scout-inbox</b> · Small Print</span><span>Example data</span></div>
+      <div class="msg">
+        <div class="avatar" aria-hidden="true">D</div>
+        <div class="msg-body">
+          <div class="who">Devin <small>07:02</small></div>
+          <p>2 new podcast episodes overnight. 3 candidates found, top one below. Clips, transcripts and contact sheets are in Drive.</p>
+          <div class="card">
+            <span class="label">Acquired · Costco · 2:03:32 – 2:04:29</span>
+            <div class="q">Why does Costco still sell a hot dog for $1.50?</div>
+            <div class="hook">“The founder told the CEO: if you raise the price of the hot dog, I will kill you.”</div>
+            <div class="scores">
+              <div class="score" style="--w:90%"><span>Hook</span><b>9/10</b><i></i></div>
+              <div class="score" style="--w:80%"><span>Payoff clarity</span><b>8/10</b><i></i></div>
+              <div class="score" style="--w:90%"><span>Fact-checkable</span><b>9/10</b><i></i></div>
+              <div class="score" style="--w:100%"><span>Channel fit</span><b>10/10</b><i></i></div>
+            </div>
+            <div class="meta"><span>Total 36/40</span><span>Clip 9:16 · 56.6 s</span><span>Framing: 3 keyframes, 1 hard cut</span></div>
+            <div>
+              <span class="label">Claims to verify before scripting</span>
+              <ul class="claims"><li>Price unchanged since 1985</li><li>Quote attributed to Jim Sinegal</li></ul>
+            </div>
+            <div class="reacts" role="group" aria-label="Review this candidate">
+              <button type="button" id="r-ok" data-reply="Noted. Starting the research brief: timeline, 3–5 sourced facts, possible twist, 60–90 s outline.">✅ Research it</button>
+              <button type="button" id="r-no" data-reply="Skipped. Saved to memory: Costco is saturated, so similar topics get filtered from now on.">❌ Skip</button>
+              <button type="button" id="r-redo" data-reply="Re-framing. Running speaker detection again on this clip and posting a new contact sheet.">🔁 Fix the crop</button>
+            </div>
+            <div class="reply" id="reply" aria-live="polite">Pick a reaction to see how the bot answers.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="note">The Costco topic is a worked example only. It was dropped from the channel as saturated, which is exactly the kind of thing the bot should remember.</p>
+  </section>
+
+  <section aria-labelledby="h-frame">
+    <span class="label">16:9 → 9:16</span>
+    <h2 id="h-frame">Framing that follows whoever is talking</h2>
+    <div class="frame-box">
+      <div class="modes" role="group" aria-label="Framing situation">
+        <button type="button" data-mode="a" aria-pressed="true">Host speaking</button>
+        <button type="button" data-mode="b" aria-pressed="false">Guest answers</button>
+        <button type="button" data-mode="chart" aria-pressed="false">Chart on screen</button>
+      </div>
+      <svg viewBox="0 0 1920 1080" role="img" aria-labelledby="svg-t">
+        <title id="svg-t">A 1920 by 1080 podcast frame with two speakers and a 608 pixel wide vertical crop window</title>
+        <rect width="1920" height="1080" fill="var(--surface-2)" stroke="var(--line)" stroke-width="4"/>
+        <g id="people">
+          <circle cx="520" cy="430" r="110" fill="var(--line)"/><rect x="380" y="560" width="280" height="420" rx="90" fill="var(--line)"/>
+          <text x="520" y="438" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="54" fill="var(--muted)">A</text>
+          <circle cx="1380" cy="430" r="110" fill="var(--line)"/><rect x="1240" y="560" width="280" height="420" rx="90" fill="var(--line)"/>
+          <text x="1380" y="438" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="54" fill="var(--muted)">B</text>
+        </g>
+        <g id="chart" opacity="0">
+          <rect x="360" y="200" width="1200" height="680" fill="var(--surface)" stroke="var(--line)" stroke-width="4"/>
+          <rect x="460" y="620" width="140" height="180" fill="var(--muted)"/><rect x="680" y="520" width="140" height="280" fill="var(--muted)"/>
+          <rect x="900" y="420" width="140" height="380" fill="var(--muted)"/><rect x="1120" y="300" width="140" height="500" fill="var(--gold)"/>
+        </g>
+        <g id="crop" transform="translate(216 0)">
+          <rect id="crop-rect" x="0" y="0" width="608" height="1080" fill="none" stroke="var(--gold)" stroke-width="10"/>
+          <rect x="213" y="0" width="182" height="1080" fill="var(--gold)" opacity="0.10"/>
+          <text x="304" y="1050" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="40" fill="var(--gold)">9:16 · 608 px</text>
+        </g>
+      </svg>
+      <p class="rule" id="rule"><b>Track.</b> The crop centres on the active speaker. The shaded band is the dead zone: while the face stays inside it, the camera holds still.</p>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-pipe">
+    <span class="label">How it gets made</span>
+    <h2 id="h-pipe">Seven steps, each with a pass mark</h2>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Step</th><th>What it does</th><th>Done when</th></tr></thead>
+        <tbody>
+          <tr><td>watch</td><td>RSS poll every 6 h, YouTube WebSub push</td><td>New episode queued within minutes</td></tr>
+          <tr><td>fetch</td><td>yt-dlp, ffmpeg to 16 kHz mono, chunks under 25 MB</td><td>Chunks cover the episode with no gaps</td></tr>
+          <tr><td>transcribe</td><td>Whisper API with word timestamps, chunks stitched</td><td>No doubled or dropped words at joins</td></tr>
+          <tr><td>score</td><td>LLM ranks “decision moments” on 4 criteria</td><td>3 of my 5 picks land in the top 3</td></tr>
+          <tr><td>frame</td><td>Shot cuts, face tracks, diarization + lip motion</td><td>Speaker in crop on ≥95% of frames</td></tr>
+          <tr><td>render</td><td>Crop keyframes to 1080×1920 + rough captions</td><td>Edit one keyframe, re-render, no re-detection</td></tr>
+          <tr><td>deliver</td><td>Drive folder + Slack card + contact sheet</td><td>3 h episode to Drive in under 45 min</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-json">
+    <span class="label">Data contract</span>
+    <h2 id="h-json">One candidate, one JSON document</h2>
+    <p>Already written and validated: a schema plus a standard-library validator that rejects bad timestamps, wrong totals and crop paths that run backwards in time.</p>
+<pre><code>{
+  <span class="k">"candidate_id"</span>: <span class="s">"acq-costco-03"</span>,
+  <span class="k">"question"</span>: <span class="s">"Why does Costco still sell a hot dog for $1.50?"</span>,
+  <span class="k">"start_s"</span>: <span class="n">7412.3</span>, <span class="k">"end_s"</span>: <span class="n">7468.9</span>,
+  <span class="k">"scores"</span>: { <span class="k">"hook"</span>: <span class="n">9</span>, <span class="k">"payoff_clarity"</span>: <span class="n">8</span>, <span class="k">"fact_checkable"</span>: <span class="n">9</span>, <span class="k">"channel_fit"</span>: <span class="n">10</span>, <span class="k">"total"</span>: <span class="n">36</span> },
+  <span class="k">"claims_to_verify"</span>: [<span class="s">"Price unchanged since 1985"</span>, <span class="s">"Quote attributed to Jim Sinegal"</span>],
+  <span class="k">"crop_track"</span>: [
+    { <span class="k">"t"</span>: <span class="n">7412.3</span>, <span class="k">"x"</span>: <span class="n">640</span>,  <span class="k">"mode"</span>: <span class="s">"track"</span>, <span class="k">"face_id"</span>: <span class="n">2</span> },
+    { <span class="k">"t"</span>: <span class="n">7431.0</span>, <span class="k">"x"</span>: <span class="n">1180</span>, <span class="k">"mode"</span>: <span class="s">"cut"</span>,   <span class="k">"face_id"</span>: <span class="n">1</span> }
+  ],
+  <span class="k">"status"</span>: <span class="s">"needs_review"</span>
+}</code></pre>
+  </section>
+
+  <footer>
+    <p>Built by the creator of Small Print. Status today: channel live, data contract and validator done, pipeline starts at milestone 1 with Devin.</p>
+    <p class="note">All numbers on the Slack card are example values until milestone 1 runs on a real episode.</p>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var reply = document.getElementById("reply");
+  document.querySelectorAll(".reacts button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      document.querySelectorAll(".reacts button").forEach(function (o) { o.setAttribute("aria-pressed", "false"); });
+      b.setAttribute("aria-pressed", "true");
+      reply.textContent = "Devin: " + b.dataset.reply;
+    });
+  });
+
+  var crop = document.getElementById("crop"), rect = document.getElementById("crop-rect");
+  var people = document.getElementById("people"), chart = document.getElementById("chart"), rule = document.getElementById("rule");
+  var modes = {
+    a: { x: 216, people: 1, chart: 0, text: "<b>Track.</b> The crop centres on the active speaker. The shaded band is the dead zone: while the face stays inside it, the camera holds still." },
+    b: { x: 1076, people: 1, chart: 0, text: "<b>Hard cut.</b> The guest is outside the current crop, so the bot cuts straight to them instead of panning. Each framing holds at least 1.5 s, so a quick “yeah” doesn’t cause ping-pong." },
+    chart: { x: 656, people: 0, chart: 1, text: "<b>Blur fill.</b> No face on screen. The full 16:9 picture sits in the middle of the vertical frame over a blurred copy, so the chart stays readable." }
+  };
+  document.querySelectorAll(".modes button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var m = modes[b.dataset.mode];
+      document.querySelectorAll(".modes button").forEach(function (o) { o.setAttribute("aria-pressed", "false"); });
+      b.setAttribute("aria-pressed", "true");
+      crop.setAttribute("transform", "translate(" + m.x + " 0)");
+      people.setAttribute("opacity", m.people);
+      chart.setAttribute("opacity", m.chart);
+      rect.setAttribute("stroke-dasharray", b.dataset.mode === "chart" ? "30 18" : "none");
+      rule.innerHTML = m.text;
+    });
+  });
+})();
+</script>
